@@ -1,0 +1,131 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Honu/BookIndex/1.0.0
+info:
+  description: API for interacting with various book indices
+  version: "1.0.0"
+  title: Book Index API
+  contact:
+    email: caleb.morris.g+book-index-inquiries@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admin
+    description: Operations for administration of the indices
+  - name: discord-consumer
+    description: Operations to be used by discord bots
+paths:
+  /indices:
+    get:
+      tags:
+        - admin
+      summary: List the book indices that are known
+      responses:
+        '200':
+          description: Succesfully shows indices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Index'
+  /indices/{indexName}:
+    delete:
+      tags:
+        - admin
+      summary: Delete a given index
+      parameters:
+        - in: path
+          name: indexName
+          schema:
+            type: string
+          required: true
+          description: The name of the index to load
+      responses:
+        '200':
+          description: Delete a given index
+        '404':
+          description: Unknown index name
+  /indices/{indexName}/load:
+    post:
+      tags:
+        - admin
+      summary: Causes a given index to load itself
+      parameters:
+        - in: path
+          name: indexName
+          schema:
+            type: string
+          required: true
+          description: The name of the index to load
+      responses:
+        '200':
+          description: Loaded index
+        '404':
+          description: Unknown index name
+  /book/{indexName}/search/{query}:
+    get:
+      tags:
+        - discord-consumer
+      summary: Search a specific book index
+      parameters:
+        - in: path
+          name: indexName
+          schema:
+            type: string
+          required: true
+          description: The name of the index to search
+        - in: path
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The URL-escaped query to search the given index for matching paragraphs
+      responses:
+        '200':
+          description: Found search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Querying a book that hasn't been indexed yet
+        '404':
+          description: Unknown index name
+
+components:
+  schemas:
+    Index:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        lastFile:
+          type: string
+        dateLastIndexed:
+          type: string
+    SearchResponse:
+      type: object
+      required:
+        - bookTitle
+        - section
+        - paragraph
+        - contentPreview
+      properties:
+        bookTitle:
+          type: string
+        section:
+          type: string
+        paragraph:
+          type: integer
+        contentPreview:
+          type: string
+        explanation:
+          type: string
