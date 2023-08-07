@@ -7,9 +7,6 @@ import org.xml.sax.SAXException
 import java.io.IOException
 import kotlin.io.path.Path
 
-
-//import org.apache.tika.parser.EpubParser
-
 class BookIndexer {
     val greeting: String
         get() {

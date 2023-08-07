@@ -23,13 +23,7 @@ class IndexDirectoryCommand(
             .filter { it.isFile }
             .filter { it.name.endsWith(".epub") }
             .map {
-                val maybeConfig = File(it.path + ".json")
-                val bookConfig: BookIndexConfig? =
-                    if (maybeConfig.exists()) JsonFileLoader.load<BookIndexConfig>(maybeConfig.toPath()) else null
-
-                if (bookConfig == null) println("Parsing file [$it]")
-                else println("Parsing file [$it] with config [$maybeConfig]")
-
+                val bookConfig: BookIndexConfig? = getConfig(it)
                 val parser = MillennialMageEpubParser(
                     parserConfig.copy(
                         metaDataOverrides = if (bookConfig != null) mapOf("dc:title" to bookConfig.bookTitle) else mapOf()
@@ -41,6 +35,20 @@ class IndexDirectoryCommand(
                 println("Indexing file [${it.bookTitle}]")
                 indexer.indexBook(it)
             }
+    }
+
+    private fun getConfig(baseFile: File): BookIndexConfig? {
+        val maybeFileSpecificConfig = File(baseFile.path + ".json")
+        if (maybeFileSpecificConfig.exists()) {
+            println("Found file config @ $maybeFileSpecificConfig")
+            return JsonFileLoader.load<BookIndexConfig>(maybeFileSpecificConfig.toPath())
+        }
+        val maybeDirConfig = File(baseFile.toPath().parent.toFile().path + "/config.json")
+        if (maybeDirConfig.exists()) {
+            println("Found directory config @ $maybeDirConfig")
+            return JsonFileLoader.load<BookIndexConfig>(maybeDirConfig.toPath())
+        }
+        return null
     }
 
 }
