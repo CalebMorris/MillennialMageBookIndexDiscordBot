@@ -74,8 +74,10 @@ class MillennialMageEpubParser(
                 )
             )
         }
+        val mergedMetaData: Map<String, String> = content.metaData + parserConfig.metaDataOverrides
         return BookResult(
-            metaData = content.metaData,
+            bookTitle = mergedMetaData.getOrDefault("dc:title", ""),
+            metaData = mergedMetaData,
             chapters = chapters
                 .toList()
                 .filterNot { c -> parserConfig.filteredSections.contains(c.chapterName) },

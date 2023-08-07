@@ -12,6 +12,7 @@ class MillennialMageEpubParserTest {
 
     @Test
     fun parsesChaptersMM1Correctly() {
+        val title = "Millennial Mage Book 1: Mageling"
         val path = ".mm_demo/Millennial Mage 1 - Mageling.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(
@@ -19,11 +20,13 @@ class MillennialMageEpubParserTest {
                 firstChapter = "Chapter: 1",
                 tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
                 chapterRegex = "^Chapter(:.*\\d+)?$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note")
+                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+                metaDataOverrides = mapOf("dc:title" to title)
             )
         )
         val results: BookResult = mmParser.parse(testFile.toPath())
 
+        assertThat(results.bookTitle, equalTo(title))
         assertEquals(results.chapters.first().chapterName, "Title Page")
 
         val chapter1 = results.chapters[1]
@@ -42,6 +45,7 @@ class MillennialMageEpubParserTest {
 
     @Test
     fun parsesChaptersMM2Correctly() {
+        val title = "Millennial Mage Book 2: Mage"
         val path = ".mm_demo/Millennial Mage 2 - Mage.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(
@@ -49,11 +53,13 @@ class MillennialMageEpubParserTest {
                 firstChapter = "Chapter: 1",
                 tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
                 chapterRegex = "^Chapter(:.*\\d+)?$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note")
+                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+                metaDataOverrides = mapOf("dc:title" to title)
             )
         )
         val results: BookResult = mmParser.parse(testFile.toPath())
 
+        assertThat(results.bookTitle, equalTo(title))
         assertEquals(results.chapters.first().chapterName, "Title Page")
 
         val chapter1 = results.chapters[1]
@@ -75,6 +81,7 @@ class MillennialMageEpubParserTest {
 
     @Test
     fun parsesChaptersMM3Correctly() {
+        val title = "Millennial Mage Book 3: Binding"
         val path = ".mm_demo/Millennial_Mage_3_-_Binding.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(
@@ -82,11 +89,13 @@ class MillennialMageEpubParserTest {
                 firstChapter = "Chapter: 1",
                 tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
                 chapterRegex = "^(Chapter(:.*\\d+)?)|(Author’s Note)|(Contents)|(Table of Contents)$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note")
+                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+                metaDataOverrides = mapOf("dc:title" to title)
             )
         )
         val results: BookResult = mmParser.parse(testFile.toPath())
 
+        assertThat(results.bookTitle, equalTo(title))
         assertEquals(results.chapters.first().chapterName, "Title Page")
 
         val chapter1 = results.chapters[1]
@@ -111,6 +120,7 @@ class MillennialMageEpubParserTest {
 
     @Test
     fun parsesChaptersMM4Correctly() {
+        val title = "Millennial Mage Book 3: Bound"
         val path = ".mm_demo/Millennial_Mage_4_-_Bound.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(
@@ -118,11 +128,13 @@ class MillennialMageEpubParserTest {
                 firstChapter = "Chapter: 1",
                 tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
                 chapterRegex = "(^Chapter(:.*\\d+)?$)|(Author’s Note)|(Contents)|(Table of Contents)",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note")
+                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+                metaDataOverrides = mapOf("dc:title" to title)
             )
         )
         val results: BookResult = mmParser.parse(testFile.toPath())
 
+        assertThat(results.bookTitle, equalTo(title))
         assertEquals(results.chapters.first().chapterName, "Title Page")
 
         val chapter1 = results.chapters[1]

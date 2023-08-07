@@ -6,6 +6,7 @@ package io.honu.books.parser.model
  * @param chapters The chapter information
  */
 data class BookResult(
+    val bookTitle: String,
     val metaData: Map<String, String>,
     val chapters: List<BookChapter>,
 )
