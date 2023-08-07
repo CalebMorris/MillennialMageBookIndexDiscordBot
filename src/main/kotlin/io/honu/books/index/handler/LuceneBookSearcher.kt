@@ -20,8 +20,8 @@ class LuceneBookSearcher(
 
     fun search(
         queryString: String,
-        explain: Boolean = false,
-        maxResults: Int = 5
+        explain: Boolean,
+        maxResults: Int,
     ): List<SearchResult> {
         DirectoryReader.open(idx).use { reader ->
             val searcher = IndexSearcher(reader)

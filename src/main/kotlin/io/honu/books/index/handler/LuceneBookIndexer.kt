@@ -11,17 +11,13 @@ import org.apache.lucene.store.MMapDirectory
 
 class LuceneBookIndexer(
     private val indexConfig: IndexConfig,
-    indexWriterConfig: IndexWriterConfig? = null,
 ) {
-
-    private val writerConfig: IndexWriterConfig =
-        indexWriterConfig ?: IndexWriterConfig(indexConfig.indexAnalyzer).setOpenMode(IndexWriterConfig.OpenMode.CREATE)
 
     fun indexBook(
         book: BookResult,
     ) {
         val idx = MMapDirectory(indexConfig.indexDir)
-        val writer = IndexWriter(idx, writerConfig)
+        val writer = IndexWriter(idx, IndexWriterConfig(indexConfig.indexAnalyzer))
         for (bookSegmentIndexDoc in bookResultToIndexDocument(bookResult = book)) {
             writer.addDocument(bookSegmentIndexDoc.asLuceneDocument())
         }

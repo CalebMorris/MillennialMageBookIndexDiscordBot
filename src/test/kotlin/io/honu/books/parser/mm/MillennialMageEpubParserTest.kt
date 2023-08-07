@@ -20,7 +20,7 @@ class MillennialMageEpubParserTest {
     @Test
     fun parsesChaptersMM1Correctly() {
         val title = "Millennial Mage Book 1: Mageling"
-        val path = ".mm_demo/Millennial Mage 1 - Mageling.epub"
+        val path = ".mm_demo/source/Millennial Mage 1 - Mageling.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
@@ -45,7 +45,7 @@ class MillennialMageEpubParserTest {
     @Test
     fun parsesChaptersMM2Correctly() {
         val title = "Millennial Mage Book 2: Mage"
-        val path = ".mm_demo/Millennial Mage 2 - Mage.epub"
+        val path = ".mm_demo/source/Millennial Mage 2 - Mage.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
@@ -73,7 +73,7 @@ class MillennialMageEpubParserTest {
     @Test
     fun parsesChaptersMM3Correctly() {
         val title = "Millennial Mage Book 3: Binding"
-        val path = ".mm_demo/Millennial_Mage_3_-_Binding.epub"
+        val path = ".mm_demo/source/Millennial_Mage_3_-_Binding.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
@@ -104,7 +104,7 @@ class MillennialMageEpubParserTest {
     @Test
     fun parsesChaptersMM4Correctly() {
         val title = "Millennial Mage Book 3: Bound"
-        val path = ".mm_demo/Millennial_Mage_4_-_Bound.epub"
+        val path = ".mm_demo/source/Millennial_Mage_4_-_Bound.epub"
         val testFile = File(path)
         val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())

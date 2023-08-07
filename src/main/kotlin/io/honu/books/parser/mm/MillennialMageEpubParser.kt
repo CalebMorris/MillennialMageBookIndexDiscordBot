@@ -12,7 +12,7 @@ import java.io.File
 import java.nio.file.Path
 
 class MillennialMageEpubParser(
-    val parserConfig: ParserConfig,
+    private val parserConfig: ParserConfig,
 ) {
     private val chapterRegex = Regex(parserConfig.chapterRegex)
     private val tableOfContentsRegex = Regex(parserConfig.tableOfContentsRegex)
