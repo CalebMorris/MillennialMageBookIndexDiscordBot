@@ -1,28 +1,11 @@
 package io.honu.books
 
 import io.honu.books.command.IndexDirectoryCommand
-import io.honu.books.command.QueryIndexCommand
-import io.honu.books.index.handler.LuceneBookIndexer
-import io.honu.books.index.handler.LuceneBookSearcher
 import io.honu.books.index.model.IndexConfig
-import io.honu.books.parser.mm.MillennialMageEpubParser
-import io.honu.books.parser.model.ParserConfig
-import org.apache.tika.Tika
 import org.apache.tika.exception.TikaException
-import org.apache.tika.metadata.Metadata
-import org.apache.tika.parser.ParseContext
-import org.apache.tika.parser.epub.EpubParser
-import org.apache.tika.sax.*
-import org.xml.sax.ContentHandler
 import org.xml.sax.SAXException
-import java.io.BufferedWriter
-import java.io.File
 import java.io.IOException
-import java.io.OutputStream
-import java.io.StringWriter
-import java.nio.charset.Charset
 import kotlin.io.path.Path
-import kotlin.io.path.absolute
 
 
 //import org.apache.tika.parser.EpubParser
@@ -40,12 +23,7 @@ fun main() {
 
 @Throws(IOException::class, SAXException::class, TikaException::class)
 fun parseExample(): Unit {
-
     val indexConfig = IndexConfig(indexDir = Path(".mm_demo/index"))
     val indexDirectoryCommand = IndexDirectoryCommand(indexConfig)
     indexDirectoryCommand.indexSourceFiles(Path(".mm_demo/source"))
-
-    val queryIndexCommand = QueryIndexCommand(indexConfig)
-    val results = queryIndexCommand.queryIndex("Grediv")
-    println(results)
 }

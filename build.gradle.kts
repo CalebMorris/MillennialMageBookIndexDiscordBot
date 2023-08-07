@@ -12,9 +12,13 @@ version = "1.0"
 
 repositories {
     mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
+
+    // -- Discord --
+    implementation("dev.kord:kord-core:0.10.0")
 
     // -- Serialization --
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0-RC")
@@ -30,11 +34,11 @@ dependencies {
     implementation("org.apache.lucene:lucene-queryparser:${luceneVersion}") // https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser
     implementation("org.apache.lucene:lucene-analyzers-common:${luceneVersion}")
 
-//    // Logging
-//    // -- Facade
-//    implementation("org.apache.logging.log4j:log4j-api:2.14.1")  // https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api
-//    implementation("org.apache.logging.log4j:log4j-core:2.14.1") // https://search.maven.org/artifact/org.apache.logging.log4j/log4j-core
-//    implementation("org.apache.logging.log4j:log4j:2.14.1")      // https://search.maven.org/artifact/org.apache.logging.log4j/log4j
+    // -- Kotlin --
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // Logging
+    implementation("org.slf4j:slf4j-simple:2.0.7")
 
     // -- Testing
     testImplementation("org.hamcrest:hamcrest:2.2")

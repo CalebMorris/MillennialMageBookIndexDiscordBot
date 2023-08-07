@@ -11,8 +11,8 @@ class QueryIndexCommand(
 
     fun queryIndex(
         query: String,
-        explain: Boolean = false,
-        maxResults: Int = 5,
+        explain: Boolean,
+        maxResults: Int,
     ): List<SearchResult> = searcher.search(query, explain, maxResults)
 
 }
