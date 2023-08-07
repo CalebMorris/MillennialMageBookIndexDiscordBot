@@ -10,20 +10,19 @@ import kotlin.test.assertEquals
 
 class MillennialMageEpubParserTest {
 
+    private val mmBookParser: ParserConfig = ParserConfig(
+        firstChapter = "Chapter: 1",
+        tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
+        chapterRegex = "^Chapter(:.*\\d+)?$",
+        filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+    )
+
     @Test
     fun parsesChaptersMM1Correctly() {
         val title = "Millennial Mage Book 1: Mageling"
         val path = ".mm_demo/Millennial Mage 1 - Mageling.epub"
         val testFile = File(path)
-        val mmParser = MillennialMageEpubParser(
-            parserConfig = ParserConfig(
-                firstChapter = "Chapter: 1",
-                tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
-                chapterRegex = "^Chapter(:.*\\d+)?$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
-                metaDataOverrides = mapOf("dc:title" to title)
-            )
-        )
+        val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
@@ -48,15 +47,7 @@ class MillennialMageEpubParserTest {
         val title = "Millennial Mage Book 2: Mage"
         val path = ".mm_demo/Millennial Mage 2 - Mage.epub"
         val testFile = File(path)
-        val mmParser = MillennialMageEpubParser(
-            parserConfig = ParserConfig(
-                firstChapter = "Chapter: 1",
-                tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
-                chapterRegex = "^Chapter(:.*\\d+)?$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
-                metaDataOverrides = mapOf("dc:title" to title)
-            )
-        )
+        val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
@@ -84,15 +75,7 @@ class MillennialMageEpubParserTest {
         val title = "Millennial Mage Book 3: Binding"
         val path = ".mm_demo/Millennial_Mage_3_-_Binding.epub"
         val testFile = File(path)
-        val mmParser = MillennialMageEpubParser(
-            parserConfig = ParserConfig(
-                firstChapter = "Chapter: 1",
-                tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
-                chapterRegex = "^(Chapter(:.*\\d+)?)|(Author’s Note)|(Contents)|(Table of Contents)$",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
-                metaDataOverrides = mapOf("dc:title" to title)
-            )
-        )
+        val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
@@ -123,15 +106,7 @@ class MillennialMageEpubParserTest {
         val title = "Millennial Mage Book 3: Bound"
         val path = ".mm_demo/Millennial_Mage_4_-_Bound.epub"
         val testFile = File(path)
-        val mmParser = MillennialMageEpubParser(
-            parserConfig = ParserConfig(
-                firstChapter = "Chapter: 1",
-                tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
-                chapterRegex = "(^Chapter(:.*\\d+)?$)|(Author’s Note)|(Contents)|(Table of Contents)",
-                filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
-                metaDataOverrides = mapOf("dc:title" to title)
-            )
-        )
+        val mmParser = MillennialMageEpubParser(parserConfig = mmBookParser.copy(metaDataOverrides = mapOf("dc:title" to title)))
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))

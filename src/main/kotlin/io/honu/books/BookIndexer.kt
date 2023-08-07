@@ -1,5 +1,8 @@
 package io.honu.books
 
+import io.honu.books.index.handler.LuceneBookIndexer
+import io.honu.books.index.handler.LuceneBookSearcher
+import io.honu.books.index.model.IndexConfig
 import io.honu.books.parser.mm.MillennialMageEpubParser
 import io.honu.books.parser.model.ParserConfig
 import org.apache.tika.Tika
@@ -16,6 +19,8 @@ import java.io.IOException
 import java.io.OutputStream
 import java.io.StringWriter
 import java.nio.charset.Charset
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
 
 
 //import org.apache.tika.parser.EpubParser
@@ -33,65 +38,29 @@ fun main() {
 
 @Throws(IOException::class, SAXException::class, TikaException::class)
 fun parseExample(): Unit {
-//    val path = ".mm_demo/Millennial Mage 1 - Mageling.epub"
-//    val testFile = File(path)
-//    val mmParser = MillennialMageEpubParser({x -> true}, listOf(), listOf(),
-//        parserConfig = ParserConfig(
-//            firstChapter = "Chapter: 1",
-//            chapterRegex = "^Chapter(:.*\\d+)?$",
-//            filteredSections = listOf("Table of Contents", "Contents")
-//        )
-//    )
-//    val results = mmParser.parse(testFile.toPath())
-//
-//    for (chapter in results.chapters.take(3)) {
-//        println(chapter.chapterName)
-//        println("First Line: ${chapter.segments.first()}")
-//        println("Last Line: ${chapter.segments.last()}")
-//        println("----")
-//    }
 
-//    val parser = EpubParser()
-//    val handler = BodyContentHandler(-1)
-//    val metadata = Metadata()
-//    val parseContext = ParseContext()
+    val indexPath = Path(".mm_demo/index")
+    println("Index will be loaded into: ${indexPath.absolute()}")
+
+    val indexConfig = IndexConfig(indexDir = Path(".mm_demo/index"))
+//    val indexer: LuceneBookIndexer = LuceneBookIndexer(indexConfig = indexConfig)
+    val searcher: LuceneBookSearcher = LuceneBookSearcher(indexConfig)
+
+//    val mmBookParserConfig: ParserConfig = ParserConfig(
+//        firstChapter = "Chapter: 1",
+//        tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
+//        chapterRegex = "^Chapter(:.*\\d+)?$",
+//        filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+//    )
+//    val mmBook1Parser = MillennialMageEpubParser(mmBookParserConfig.copy(
+//        metaDataOverrides = mapOf("dc:title" to "Mageling")
+//    ))
 //
-//    val path = ".mm_demo/Millennial Mage 1 - Mageling.epub"
-//    val testFile = File(path)
-//
-//    parser.parse(testFile.inputStream(), handler, metadata, parseContext);
-//
-//    println("--${testFile.absolutePath}--")
-//
-//    println("--MetaData--")
-//    val metadataNames = metadata.names()
-//    for (name in metadataNames) {
-//        println(name + ": " + metadata[name])
-//    }
-//
-//    val content: String = handler.toString()
-//    val lines: List<String> = content.split("\n")
-//
-//    var hasBegun = false
-//    var ch1Count = 0
-//    val final = lines.foldRight(ChapterInfo(-1, 0)){ line, chapterInfo ->
-//        if (!hasBegun) {
-//            if (line.contains(Regex("Chapter: \\d+"))) {
-//                if (ch1Count == 1) hasBegun = true
-//                ch1Count = 1
-//            }
-//            chapterInfo
-//        } else {
-//            if (line.contains(Regex("Chapter: \\d+"))) {
-//                println(chapterInfo)
-//                ChapterInfo(chapterInfo.chapterNumber + 1, 0)
-//            } else {
-//                chapterInfo.copy(segmentCount = chapterInfo.segmentCount + 1)
-//            }
-//        }
-//    }
-//    println(final)
-//
-////    println("${content.split("\n").size} lines")
-//    println(content.take(1000))
+//    indexer.indexBook(
+//        mmBook1Parser.parse(Path(".mm_demo/Millennial Mage 1 - Mageling.epub"))
+//    )
+
+    val results = searcher.search("Grediv")
+    println(results)
+
 }
