@@ -10,12 +10,7 @@ import kotlin.test.assertEquals
 
 class MillennialMageEpubParserTest {
 
-    private val mmBookParser: ParserConfig = ParserConfig(
-        firstChapter = "Chapter: 1",
-        tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
-        chapterRegex = "^Chapter(:.*\\d+)?$",
-        filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
-    )
+    private val mmBookParser: ParserConfig = MillennialMageParserConfigs.mmBookParserConfig
 
     @Test
     fun parsesChaptersMM1Correctly() {

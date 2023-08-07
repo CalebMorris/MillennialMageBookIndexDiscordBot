@@ -65,7 +65,7 @@ application {
 
 tasks.shadowJar {
     archiveBaseName.set("BookIndexLocal")
-    transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer())
+//    transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer())
 }
 
 tasks.build {

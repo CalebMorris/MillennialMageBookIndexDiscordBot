@@ -11,4 +11,12 @@ object MillennialMageParserConfigs {
         filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
     )
 
+    val mmRoyalRoadBookParser: ParserConfig = ParserConfig(
+        firstChapter = "",
+        tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
+        chapterRegex = "^Chapter(:.*\\d+)? - .*$",
+        filteredSections = listOf("Information", "Table of Contents", "Title Page"),
+        metaDataOverrides = mapOf("dc:title" to "Millennial Mage - Royal Road Chapters")
+    )
+
 }
