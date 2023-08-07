@@ -23,7 +23,7 @@ import kotlin.io.path.Path
 suspend fun main() = withContext(Dispatchers.Default) {
     val queryCommandPrefix = System.getenv("BOOK_INDEX_QUERY_PREFIX") ?: "!query"
 
-    require(System.getenv("DISCORD_TOKEN") != null)
+    require(System.getenv("DISCORD_TOKEN") != null) { "[DISCORD_TOKEN] must not be empty" }
     val kord = Kord(System.getenv("DISCORD_TOKEN"))
 
     val indexConfig = IndexConfig(indexDir = Path(".mm_demo/index"))
