@@ -37,7 +37,7 @@ class LuceneBookSearcher(
         maxResults: Int
     ): List<SearchResult> {
         val parser = QueryParser(BookIndexDocFields.SEGMENT_CONTENT, indexConfig.indexAnalyzer)
-        val query: Query = parser.parse(queryString)
+        val query: Query = parser.parse(QueryParser.escape(queryString))
         val hits: TopDocs = searcher.search(query, maxResults)
 
         return hits.scoreDocs.map {
