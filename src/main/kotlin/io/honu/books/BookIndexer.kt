@@ -20,7 +20,7 @@ fun main() {
 
 @Throws(IOException::class, SAXException::class, TikaException::class)
 fun parseExample(): Unit {
-    val indexConfig = IndexConfig(indexDir = Path(".mm_demo/index"))
+    val indexConfig = IndexConfig(indexPath = Path(".mm_demo/index"), sourcePath = Path(".mm_demo/source"))
     val indexDirectoryCommand = IndexDirectoryCommand(indexConfig)
-    indexDirectoryCommand.indexSourceFiles(Path(".mm_demo/source"))
+    indexDirectoryCommand.indexSourceFiles()
 }

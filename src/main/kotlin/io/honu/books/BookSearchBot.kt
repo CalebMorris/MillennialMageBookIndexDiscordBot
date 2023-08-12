@@ -13,6 +13,7 @@ import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.honu.books.command.IndexDirectoryCommand
 import io.honu.books.command.QueryIndexCommand
 import io.honu.books.index.model.IndexConfig
 import io.honu.books.index.view.SearchResult
@@ -26,8 +27,12 @@ suspend fun main() = withContext(Dispatchers.Default) {
     require(System.getenv("DISCORD_TOKEN") != null) { "[DISCORD_TOKEN] must not be empty" }
     val kord = Kord(System.getenv("DISCORD_TOKEN"))
 
-    val indexConfig = IndexConfig(indexDir = Path(".mm_demo/index"))
+    val indexConfig = IndexConfig(indexPath = Path(".mm_demo/index"), sourcePath = Path(".mm_demo/source"))
     val queryIndexCommand = QueryIndexCommand(indexConfig)
+    val indexCommand = IndexDirectoryCommand(indexConfig)
+
+    indexCommand.clearCurrentIndex()
+    indexCommand.indexSourceFiles()
 
     kord.on<MessageCreateEvent> { // runs every time a message is created that our bot can read
         // ignore other bots, even ourselves. We only serve humans here!

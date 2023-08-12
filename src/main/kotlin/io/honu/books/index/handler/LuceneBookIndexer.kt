@@ -16,7 +16,7 @@ class LuceneBookIndexer(
     fun indexBook(
         book: BookResult,
     ) {
-        val idx = MMapDirectory(indexConfig.indexDir)
+        val idx = MMapDirectory(indexConfig.indexPath)
         val writer = IndexWriter(idx, IndexWriterConfig(indexConfig.indexAnalyzer))
         for (bookSegmentIndexDoc in bookResultToIndexDocument(bookResult = book)) {
             writer.addDocument(bookSegmentIndexDoc.asLuceneDocument())

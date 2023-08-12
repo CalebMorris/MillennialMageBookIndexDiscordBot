@@ -16,7 +16,7 @@ class LuceneBookSearcher(
     private val indexConfig: IndexConfig
 ) {
 
-    private val idx = MMapDirectory(indexConfig.indexDir)
+    private val idx = MMapDirectory(indexConfig.indexPath)
 
     fun search(
         queryString: String,

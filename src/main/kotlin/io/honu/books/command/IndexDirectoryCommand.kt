@@ -7,17 +7,23 @@ import io.honu.books.parser.mm.MillennialMageEpubParser
 import io.honu.books.parser.mm.MillennialMageParserConfigs
 import io.honu.books.parser.model.BookIndexConfig
 import java.io.File
-import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
 
 class IndexDirectoryCommand(
-    indexConfig: IndexConfig,
+    private val indexConfig: IndexConfig,
 ) {
 
     private val indexer: LuceneBookIndexer = LuceneBookIndexer(indexConfig = indexConfig)
     private val parserConfig = MillennialMageParserConfigs.mmBookParserConfig
 
-    fun indexSourceFiles(sourcePath: Path) {
-        sourcePath
+    @OptIn(ExperimentalPathApi::class)
+    fun clearCurrentIndex() {
+        indexConfig.indexPath.deleteRecursively()
+    }
+
+    fun indexSourceFiles() {
+        indexConfig.sourcePath
             .toFile()
             .walkTopDown()
             .filter { it.isFile }
