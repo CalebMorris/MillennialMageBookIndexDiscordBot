@@ -50,9 +50,10 @@ class LuceneBookSearcher(
     }
 
     private fun LuceneIndexSearchResult.asSearchView(): SearchResult = SearchResult(
-        bookTitle = this.document.get(BookIndexDocFields.BOOK_TITLE),
-        chapterName = this.document.get(BookIndexDocFields.CHAPTER_NAME),
-        segmentContent = this.document.get(BookIndexDocFields.SEGMENT_CONTENT),
+        bookIndex = this.document.get(BookIndexDocFields.BOOK_INDEX)?.toUInt(),
+        bookTitle = this.document.get(BookIndexDocFields.BOOK_TITLE) ?: "",
+        chapterName = this.document.get(BookIndexDocFields.CHAPTER_NAME) ?: "",
+        segmentContent = this.document.get(BookIndexDocFields.SEGMENT_CONTENT) ?: "",
         explanation = this.explanation?.toString(),
     )
 

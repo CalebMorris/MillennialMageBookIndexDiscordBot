@@ -17,7 +17,7 @@ class BookIndexer {
 
 fun main() {
     val indexConfig = IndexConfig(indexPath = Path(".mm_demo/index"), sourcePath = Path(".mm_demo/source"))
-    indexExample(indexConfig)
+//    indexExample(indexConfig)
     searchExample(indexConfig)
 }
 
@@ -31,6 +31,6 @@ fun indexExample(indexConfig: IndexConfig): Unit {
 @Throws(IOException::class, SAXException::class, TikaException::class)
 fun searchExample(indexConfig: IndexConfig): Unit {
     val queryIndexCommand = QueryIndexCommand(indexConfig)
-    val results = queryIndexCommand.queryIndex("Tala", false, 5)
+    val results = queryIndexCommand.queryIndex("Dasgannach", false, 5)
     println(results)
 }

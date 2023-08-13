@@ -25,11 +25,12 @@ class LuceneBookIndexer(
     }
 
     private fun bookResultToIndexDocument(bookResult: BookResult): Sequence<BookSegmentIndexDocument> = sequence {
-        val title: String = bookResult.bookTitle
+        val title: String = bookResult.bookTitle ?: ""
         for ((chapterIndex, chapter) in bookResult.chapters.withIndex()) {
             for ((segmentIndex, segment) in chapter.segments.withIndex()) {
                 yield(
                     BookSegmentIndexDocument(
+                        bookIndex = bookResult.bookIndex,
                         bookTitle = title,
                         chapterIndex = chapterIndex,
                         chapterName = chapter.chapterName,
@@ -48,6 +49,9 @@ class LuceneBookIndexer(
         doc.add(IntPoint(BookIndexDocFields.CHAPTER_INDEX, this.chapterIndex))
         doc.add(IntPoint(BookIndexDocFields.SEGMENT_INDEX, this.segmentIndex))
         doc.add(TextField(BookIndexDocFields.SEGMENT_CONTENT, this.segmentContent, Field.Store.YES))
+        if (this.bookIndex != null) {
+            doc.add(StringField(BookIndexDocFields.BOOK_INDEX, this.bookIndex.toString(), Field.Store.YES))
+        }
         return doc
     }
 

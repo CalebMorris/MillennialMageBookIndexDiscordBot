@@ -1,7 +1,9 @@
 package io.honu.books.parser.mm
 
+import io.honu.books.helper.json.JsonFileLoader
 import io.honu.books.parser.model.BookChapter
 import io.honu.books.parser.model.BookResult
+import io.honu.books.parser.model.BookSourceConfig
 import io.honu.books.parser.model.ParserConfig
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.ParseContext
@@ -22,8 +24,11 @@ class MillennialMageEpubParser(
     private val metadata = Metadata()
     private val parseContext = ParseContext()
 
-    fun parse(filePath: Path): BookResult =
-        parseContent(parseEpub(filePath))
+    fun parse(filePath: Path): BookResult {
+        val config: BookSourceConfig = getConfig(filePath)
+            ?: throw Error("Unable to resolved configuration for [${filePath}]")
+        return parseContent(parseEpub(filePath), config)
+    }
 
     private fun parseEpub(filePath: Path): BookContent {
         val testFile: File = filePath.toFile()
@@ -47,7 +52,7 @@ class MillennialMageEpubParser(
         }
     }
 
-    private fun parseContent(content: BookContent): BookResult {
+    private fun parseContent(content: BookContent, config: BookSourceConfig): BookResult {
         val lines: List<String> = content.textContent.lines().reversed()
         val chapters: Sequence<BookChapter> = sequence {
             val final = lines.foldRight(Pair("Title Page", mutableListOf<String>())) { line, acc ->
@@ -76,12 +81,27 @@ class MillennialMageEpubParser(
         }
         val mergedMetaData: Map<String, String> = content.metaData + parserConfig.metaDataOverrides
         return BookResult(
+            bookIndex = config.bookIndex,
             bookTitle = mergedMetaData.getOrDefault("dc:title", ""),
             metaData = mergedMetaData,
             chapters = chapters
                 .toList()
                 .filterNot { c -> parserConfig.filteredSections.contains(c.chapterName) },
         )
+    }
+
+    private fun getConfig(basePath: Path): BookSourceConfig? {
+        val maybeFileSpecificConfig = File(basePath.toFile().path + ".json")
+        if (maybeFileSpecificConfig.exists()) {
+            println("Found file config @ $maybeFileSpecificConfig")
+            return JsonFileLoader.load<BookSourceConfig>(maybeFileSpecificConfig.toPath())
+        }
+        val maybeDirConfig = File(basePath.parent.toFile().path + "/config.json")
+        if (maybeDirConfig.exists()) {
+            println("Found directory config @ $maybeDirConfig")
+            return JsonFileLoader.load<BookSourceConfig>(maybeDirConfig.toPath())
+        }
+        return null
     }
 
     private data class BookContent(
