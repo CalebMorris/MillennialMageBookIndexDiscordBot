@@ -13,6 +13,7 @@ import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.honu.books.bot.mm.MillennialMageThumbnailResolver
 import io.honu.books.command.IndexDirectoryCommand
 import io.honu.books.command.QueryIndexCommand
 import io.honu.books.index.model.IndexConfig
@@ -35,14 +36,7 @@ suspend fun main() = withContext(Dispatchers.Default) {
     indexCommand.clearCurrentIndex()
     indexCommand.indexSourceFiles()
     val bookConfigs: Sequence<BookSourceConfig> = indexCommand.loadBookConfigs()
-    val defaultThumbnailUrl =
-        "https://www.royalroadcdn.com/public/covers-full/47826-millennial-mage-a-slice-of-life-progression.jpg"
-    val thumbnailMap: Map<UInt, String> = bookConfigs.fold(mutableMapOf()) { acc, config ->
-        if (config.bookIndex != null && config.thumbnailUrl != null) {
-            acc[config.bookIndex] = config.thumbnailUrl
-        }
-        acc
-    }
+    val thumbnailResolver = MillennialMageThumbnailResolver(bookConfigs)
 
     kord.on<MessageCreateEvent> { // runs every time a message is created that our bot can read
         // ignore other bots, even ourselves. We only serve humans here!
@@ -68,7 +62,7 @@ suspend fun main() = withContext(Dispatchers.Default) {
         val responseMessage = message.channel.createEmbed {
             this.title = "Search \"${queryString}\" (1/${results.size})"
             this.thumbnail = EmbedBuilder.Thumbnail().apply {
-                this.url = thumbnailMap.getOrDefault(result1.bookIndex ?: 0, defaultThumbnailUrl)
+                this.url = thumbnailResolver.getThumbnailForBookIndex(result1.bookIndex ?: 0U)
             }
             this.color = Color(0x0099FF)
             this.footer = footer
