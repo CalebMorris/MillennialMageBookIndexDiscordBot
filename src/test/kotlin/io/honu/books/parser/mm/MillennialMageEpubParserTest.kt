@@ -21,9 +21,8 @@ class MillennialMageEpubParserTest {
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
-        assertEquals(results.chapters.first().chapterName, "Title Page")
 
-        val chapter1 = results.chapters[1]
+        val chapter1 = results.chapters.first()
         assertThat(chapter1.chapterName, equalTo("Chapter: 1"))
         assertThat(chapter1.segments.first(), equalTo("New Beginnings"))
         assertThat(
@@ -46,9 +45,8 @@ class MillennialMageEpubParserTest {
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
-        assertEquals(results.chapters.first().chapterName, "Title Page")
 
-        val chapter1 = results.chapters[1]
+        val chapter1 = results.chapters.first()
         assertThat(chapter1.chapterName, equalTo("Chapter: 1"))
         assertThat(chapter1.segments.first(), equalTo("To the Ending Grove"))
         assertThat(
@@ -74,9 +72,8 @@ class MillennialMageEpubParserTest {
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
-        assertEquals(results.chapters.first().chapterName, "Title Page")
 
-        val chapter1 = results.chapters[1]
+        val chapter1 = results.chapters.first()
         assertThat(chapter1.chapterName, equalTo("Chapter: 1"))
         assertThat(chapter1.segments.first(), equalTo("I’m Going to Become an Archon"))
         assertThat(
@@ -105,9 +102,8 @@ class MillennialMageEpubParserTest {
         val results: BookResult = mmParser.parse(testFile.toPath())
 
         assertThat(results.bookTitle, equalTo(title))
-        assertEquals(results.chapters.first().chapterName, "Title Page")
 
-        val chapter1 = results.chapters[1]
+        val chapter1 = results.chapters.first()
         assertThat(chapter1.chapterName, equalTo("Chapter: 1"))
         assertThat(chapter1.segments.first(), equalTo("That Seems Bad"))
         assertThat(

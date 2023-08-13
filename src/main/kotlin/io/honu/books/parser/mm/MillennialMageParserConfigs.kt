@@ -8,7 +8,7 @@ object MillennialMageParserConfigs {
         firstChapter = "Chapter: 1",
         tableOfContentsRegex = "^(Contents)|(Table of Contents)$",
         chapterRegex = "^Chapter(:.*\\d+)?$",
-        filteredSections = listOf("Table of Contents", "Contents", "Author’s Note"),
+        filteredSections = listOf("Table of Contents", "Contents", "Author’s Note", "Title Page"),
     )
 
     val mmRoyalRoadBookParser: ParserConfig = ParserConfig(
