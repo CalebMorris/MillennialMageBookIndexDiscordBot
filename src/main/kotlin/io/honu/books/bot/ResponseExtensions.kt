@@ -11,4 +11,11 @@ object ResponseExtensions {
         this.addReaction(Emojis.rightArrow)
     }
 
+    suspend fun Message.removeInputReactions() {
+        this.deleteReaction(Emojis.redEx)
+        this.deleteReaction(Emojis.leftArrow)
+        this.deleteReaction(Emojis.stopButton)
+        this.deleteReaction(Emojis.rightArrow)
+    }
+
 }
