@@ -1,5 +1,7 @@
 package io.honu.books.bot
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
@@ -27,30 +29,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
+
 
 class IndexBot(
     private val queryCommandPrefix: String,
-    private val indexConfig: IndexConfig,
+    indexConfig: IndexConfig,
     private val kord: Kord,
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(IndexBot::class.java)
+    private val queryIndexCommand = QueryIndexCommand(indexConfig)
+    private val indexCommand = IndexDirectoryCommand(indexConfig)
+
+    val activeMessages: Cache<Snowflake, ActiveBotMessage> = CacheBuilder.newBuilder()
+        .maximumSize(10000)
+        .expireAfterWrite(10, TimeUnit.MINUTES)
+        .build<Snowflake, ActiveBotMessage>()
 
     init {
         logger.info("Initializing IndexBot with {queryCommandPrefix=${queryCommandPrefix},indexConfig=${indexConfig}}")
     }
 
     suspend fun start() = withContext(Dispatchers.Default) {
-        val queryIndexCommand = QueryIndexCommand(indexConfig)
-        val indexCommand = IndexDirectoryCommand(indexConfig)
-
         indexCommand.clearCurrentIndex()
         indexCommand.indexSourceFiles()
         val bookConfigs: Sequence<BookSourceConfig> = indexCommand.loadBookConfigs()
         val thumbnailResolver = MillennialMageThumbnailResolver(bookConfigs)
-        val searchResultEmbedBuilder: SearchResultEmbedBuilder = SearchResultEmbedBuilder(thumbnailResolver)
-
-        val activeMessages: MutableMap<Snowflake, ActiveBotMessage> = mutableMapOf()
+        val searchResultEmbedBuilder = SearchResultEmbedBuilder(thumbnailResolver)
 
         kord.on<MessageCreateEvent> { // runs every time a message is created that our bot can read
             // ignore other bots, even ourselves. We only serve humans here!
@@ -74,17 +80,18 @@ class IndexBot(
             )
 
             message.author?.id?.let {
-                activeMessages[responseMessage.id] = ActiveBotMessage(
-                    channelId = responseMessage.channelId,
-                    messageId = responseMessage.id,
-                    initiatingMessageId = message.id,
-                    requestingUserId = it,
-                    queryString = queryString,
-                    queryPosition = 0,
-                    results = results,
+                activeMessages.put(
+                    responseMessage.id, ActiveBotMessage(
+                        channelId = responseMessage.channelId,
+                        messageId = responseMessage.id,
+                        initiatingMessageId = message.id,
+                        requestingUserId = it,
+                        queryString = queryString,
+                        queryPosition = 0,
+                        results = results,
+                    )
                 )
             }
-
             responseMessage.addInputReactions()
         }
 
@@ -93,13 +100,13 @@ class IndexBot(
 
             logger.info("reaction: $this")
 
-            val activeMessage = activeMessages.get(this.messageId) ?: return@on
+            val activeMessage = activeMessages.getIfPresent(this.messageId) ?: return@on
 
             logger.info("Reaction on active message!")
             when (this.emoji.name) {
                 "❌" -> {
                     logger.info("Close this message")
-                    activeMessages.remove(this.messageId)
+                    activeMessages.invalidate(this.messageId)
                     this.getMessage().delete("User requested removal")
                 }
 
@@ -107,7 +114,7 @@ class IndexBot(
                     logger.info("Previous page")
                     if (activeMessage.queryPosition <= 1) return@on
                     val previousActiveMessage = activeMessage.copy(queryPosition = activeMessage.queryPosition - 1)
-                    activeMessages[activeMessage.messageId] = previousActiveMessage
+                    activeMessages.put(activeMessage.messageId, previousActiveMessage)
                     this.message.edit {
                         this.embeds =
                             mutableListOf(EmbedBuilder().apply(searchResultEmbedBuilder.buildEmbed(previousActiveMessage)))
@@ -123,7 +130,7 @@ class IndexBot(
                     logger.info("Next page")
                     if (activeMessage.queryPosition >= (activeMessage.results.size - 1)) return@on
                     val nextActiveMessage = activeMessage.copy(queryPosition = activeMessage.queryPosition + 1)
-                    activeMessages[activeMessage.messageId] = nextActiveMessage
+                    activeMessages.put(activeMessage.messageId, nextActiveMessage)
                     this.message.edit {
                         this.embeds =
                             mutableListOf(EmbedBuilder().apply(searchResultEmbedBuilder.buildEmbed(nextActiveMessage)))

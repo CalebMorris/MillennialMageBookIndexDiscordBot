@@ -17,6 +17,9 @@ repositories {
 
 dependencies {
 
+    // -- Utility --
+    implementation("com.google.guava:guava:32.1.2-jre")
+
     // -- Discord --
     implementation("dev.kord:kord-core:0.10.0")
 
